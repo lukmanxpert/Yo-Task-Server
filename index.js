@@ -41,6 +41,11 @@ async function run() {
       res.send(result)
     })
 
+    app.post('/task', async (req, res) => {
+      const taskBody = req.body
+      const result = await taskCollection.insertOne(taskBody)
+      res.send(result)
+    })
 
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
