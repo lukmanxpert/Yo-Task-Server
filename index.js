@@ -3,7 +3,7 @@ const express = require('express');
 const app = express()
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const cors = require('cors');
-const port = process.env.PORT || 7000
+const port = process.env.PORT || 5000
 app.use(express.json())
 app.use(cors())
 
@@ -28,35 +28,33 @@ async function run() {
     const database = client.db("TaskManager");
     const usersCollection = database.collection("users");
     const taskCollection = database.collection("task");
-    
-    // user post api
+
     app.post('/users', async (req, res) => {
-      const usersBody = req.body;
+      const usersBody = req.body
+      // new up
       const query = { userEmail: usersBody.userEmail }
       const existingUser = await usersCollection.findOne(query)
       if (existingUser) {
         return res.send({ message: 'user already exists', insertedId: null })
       }
+      // new up
       const result = await usersCollection.insertOne(usersBody)
       res.send(result)
     })
 
-    // add task api
     app.post('/task', async (req, res) => {
       const taskBody = req.body
       const result = await taskCollection.insertOne(taskBody)
       res.send(result)
     })
 
-    // get all task api
     app.get('/task/:email', async (req, res) => {
       const email = req.params.email
       const query = {userEmail: email }
       const result = await taskCollection.find(query).toArray()
       res.send(result)
     })
-
-    // update task api
+    
     app.put('/task/:id', async (req, res) => {
       const id = req.params.id
       const filter = { _id: new ObjectId(id) }
@@ -73,7 +71,7 @@ async function run() {
       res.send(result)
     })
 
-    // delete task api
+
     app.delete("/task/:id",async (req, res) => {
       const id = req.params.id
       const query = { _id: new ObjectId(id) };
@@ -81,7 +79,6 @@ async function run() {
       res.send(result)
     })
 
-    // update task category api
     app.put('/task/update/:id', async (req, res) => {
       const { id } = req.params;
       const { category } = req.body;
@@ -96,7 +93,7 @@ async function run() {
           res.status(500).send({ success: false, message: "Failed to update category" });
       }
   }); 
-
+    
 
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
@@ -109,7 +106,7 @@ run().catch(console.dir);
 
 
 app.get('/', (req, res) => {
-  res.send("Yo'Task Running")
+  res.send("Task Management ...")
 })
 
 app.listen(port, () => {
