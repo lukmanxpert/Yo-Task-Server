@@ -80,6 +80,24 @@ async function run() {
       const result = await taskCollection.deleteOne(query);
       res.send(result)
     })
+
+    // update task category api
+    app.put('/task/update/:id', async (req, res) => {
+      const { id } = req.params;
+      const { category } = req.body;
+  
+      try {
+          const result = await taskCollection.updateOne(
+              { _id: new ObjectId(id) },
+              { $set: { category: category } }
+          );
+          res.send({ success: true, message: "Task category updated" });
+      } catch (error) {
+          res.status(500).send({ success: false, message: "Failed to update category" });
+      }
+  }); 
+
+
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     // Ensures that the client will close when you finish/error
