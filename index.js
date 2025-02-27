@@ -28,7 +28,8 @@ async function run() {
     const database = client.db("TaskManager");
     const usersCollection = database.collection("users");
     const taskCollection = database.collection("task");
-
+    
+    // user post api
     app.post('/users', async (req, res) => {
       const usersBody = req.body;
       const query = { userEmail: usersBody.userEmail }
@@ -36,14 +37,22 @@ async function run() {
       if (existingUser) {
         return res.send({ message: 'user already exists', insertedId: null })
       }
-      // new up
       const result = await usersCollection.insertOne(usersBody)
       res.send(result)
     })
 
+    // add task api
     app.post('/task', async (req, res) => {
       const taskBody = req.body
       const result = await taskCollection.insertOne(taskBody)
+      res.send(result)
+    })
+
+    // get all task api
+    app.get('/task/:email', async (req, res) => {
+      const email = req.params.email
+      const query = {userEmail: email }
+      const result = await taskCollection.find(query).toArray()
       res.send(result)
     })
 
