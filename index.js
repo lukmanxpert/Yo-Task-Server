@@ -56,6 +56,24 @@ async function run() {
       res.send(result)
     })
 
+    // update task api
+    app.put('/task/:id', async (req, res) => {
+      const id = req.params.id
+      const filter = { _id: new ObjectId(id) }
+      const updateTask = req.body
+      const updateDoc = {
+        $set: {
+          title: updateTask.title,
+          description: updateTask.description,
+          category: updateTask.category,
+          date: updateTask.date
+        }
+      }
+      const result = await taskCollection.updateOne(filter, updateDoc);
+      res.send(result)
+    })
+
+
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     // Ensures that the client will close when you finish/error
